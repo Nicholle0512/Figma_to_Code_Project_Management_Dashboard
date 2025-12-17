@@ -1,34 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Love Letter Generator 💌</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Project Management Dashboard</title>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div class="sidebar">
+			<h2>Project Manager</h2>
+				<ul>
+					<li class="active">Dashboard</li>
+					<li>Projects</li>
+					<li>Teams</li>
+					<li>Calendar</li>
+			</ul>
+			<div class="settings">
+				<i class="fa-solid fa-gear"></i>
+			</div>
+		</div>
+		<div class="main">
+			<h1>Dashboard</h1>
+				<div class="cards">
+					<div class="card">
+						<h3>Active Projects</h3>
+							<p>8</p>
+					</div>
+					<div class="card">
+						<h3>Tasks Today</h3>
+							<p>15</p>
+					</div>
+					<div class="card">
+						<h3>Team Members</h3>
+							<p>5</p>
+					</div>
+				</div>
 
-  <!-- Floating Hearts Container -->
-  <div id="hearts-container"></div>
-
-  <div class="container">
-    <h1>Love Letter Generator 💌</h1>
-
-    <p id="message" class="fade">Click the button for a love note…</p>
-
-    <button id="generateBtn" class="main-btn">Send Me Love</button>
-
-    <button id="saveBtn">Save to Favorites <span>💖</span></button>
-
-    <h2>Saved Favorites</h2>
-    <ul id="favoritesList"></ul>
-  </div>
-
-  <script src="script.js"></script>
-</body>
+			<h2>Project Overview</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>Project</th>
+							<th>Status</th>
+							<th>Due Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Website Redesign</td>
+							<td>
+								<span class="status status--in-progress"> 
+								<span class="dot"></span>
+									In Progress
+								</span>
+							</td>
+							<td>2026/01/10</td>
+						</tr>
+						<tr>
+							<td>Marketing Campaign</td>
+							<td>
+								<span class="status status--completed"> 
+								<span class="dot"></span>
+									Completed
+								</span>
+							</td>
+							<td>2025/12/20</td>
+						</tr>
+						<tr>
+							<td>App Prototype</td>
+							<td>
+								<span class="status status--not-started">
+								<span class="dot"></span>
+									Not Started
+								</span>
+							</td>
+							<td>2026/02/05</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</body>
 </html>
 
 
-
-
     
+
 
