@@ -9,7 +9,7 @@ Overview:
 This project shows my ability to effectively pair my UX and UI design knowledge with HTML and CSS to build and style a project management dashboard. 
 
 Features:
-- Summary blocks showing active projects, the amount of tasks per day, and the amount of team members on the projects
+- Summary boxes showing active projects, the amount of tasks per day, and the amount of team members on the projects
 - A project overview section listing the project name, the completion status, and the due date
 - Yellow underline animation upon hover over sidebar links for improved link visibility and feedback
 
