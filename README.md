@@ -1,6 +1,4 @@
-# Figma_to_Code_Project_Management_Dashboard
-
-WIP
+Project Manager Dashboard
 
 Description:
 A Project Management Dashboard designed in Figma then using HTML and CSS to execute the design in code. 
