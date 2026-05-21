@@ -1,87 +1,1667 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Project Management Dashboard</title>
-		<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-		<link rel="stylesheet" href="style.css">
-	</head>
-	<body>
-		<div class="sidebar">
-			<h2>Project Manager</h2>
-				<ul>
-					<li class="active">Dashboard</li>
-					<li>Projects</li>
-					<li>Teams</li>
-					<li>Calendar</li>
-			</ul>
-			<div class="settings">
-				<i class="fa-solid fa-gear"></i>
-			</div>
-		</div>
-		<div class="main">
-			<h1>Dashboard</h1>
-				<div class="cards">
-					<div class="card">
-						<h3>Active Projects</h3>
-							<p>8</p>
-					</div>
-					<div class="card">
-						<h3>Tasks Today</h3>
-							<p>15</p>
-					</div>
-					<div class="card">
-						<h3>Team Members</h3>
-							<p>5</p>
-					</div>
-				</div>
-
-			<h2>Project Overview</h2>
-				<table>
-					<thead>
-						<tr>
-							<th>Project</th>
-							<th>Status</th>
-							<th>Due Date</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Website Redesign</td>
-							<td>
-								<span class="status status--in-progress"> 
-								<span class="dot"></span>
-									In Progress
-								</span>
-							</td>
-							<td>2026/01/10</td>
-						</tr>
-						<tr>
-							<td>Marketing Campaign</td>
-							<td>
-								<span class="status status--completed"> 
-								<span class="dot"></span>
-									Completed
-								</span>
-							</td>
-							<td>2025/12/20</td>
-						</tr>
-						<tr>
-							<td>App Prototype</td>
-							<td>
-								<span class="status status--not-started">
-								<span class="dot"></span>
-									Not Started
-								</span>
-							</td>
-							<td>2026/02/05</td>
-						</tr>
-					</tbody>
-				</table>
-		</div>
-	</body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root {
+      --bg:                 #0A1230;
+      --bg-deep:            #060B22;
+      --surface:            #131E45;
+      --surface-hi:         #1A2856;
+      --surface-2:          #0F1838;
+      --ink:                #ECEFF8;
+      --ink-soft:           #B0B9D6;
+      --muted:              #6A7299;
+      --muted-low:          #4A527A;
+      --line:               #1E2A57;
+      --blue:               #1B4FC0;
+      --blue-bright:        #4A78E8;
+      --amber:              #E8B33A;
+      --accent:             #A78BFA;
+      --accent-deep:        #8B5CF6;
+      --accent-glow:        rgba(167,139,250,0.20);
+      --in-progress:        #BD8400;
+      --in-progress-br:     #E5A82A;
+      --completed:          #176336;
+      --completed-br:       #3A9B5A;
+      --not-started:        #AB2117;
+      --not-started-br:     #D43325;
+    }
+ 
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+ 
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      font-variant-numeric: tabular-nums;
+      -webkit-font-smoothing: antialiased;
+      background-image:
+        radial-gradient(circle at 12% 0%, rgba(74,120,232,0.14), transparent 42%),
+        radial-gradient(circle at 92% 100%, rgba(167,139,250,0.08), transparent 45%);
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none;
+      z-index: 0;
+    }
+ 
+    /* ============ SIDEBAR ============ */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: var(--bg-deep);
+      border-right: 1px solid var(--line);
+      padding: 28px 0 20px;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+    .brand {
+      padding: 0 22px 22px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+    .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .brand-mark {
+      width: 26px; height: 26px;
+      background: var(--blue);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 1px rgba(74,120,232,0.4), 0 6px 14px rgba(27,79,192,0.35);
+    }
+    .brand-mark::after {
+      content: '';
+      width: 9px; height: 9px;
+      background: var(--amber);
+      border-radius: 2px;
+    }
+    .brand-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .brand-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 36px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      background: var(--completed-br);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(58,155,90,0.18);
+      animation: live 2.2s ease-in-out infinite;
+    }
+    @keyframes live { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+ 
+    .nav-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted-low);
+      padding: 0 22px;
+      margin-bottom: 10px;
+    }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 11px 22px;
+      cursor: pointer;
+      color: var(--ink-soft);
+      transition: all 0.2s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+    .sidebar li i {
+      font-size: 13px;
+      width: 16px;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+    .sidebar li:hover {
+      color: var(--ink);
+      background: rgba(74,120,232,0.07);
+    }
+    .sidebar li:hover i { color: var(--ink-soft); }
+    .sidebar li.active {
+      color: var(--ink);
+      background: linear-gradient(to right, rgba(74,120,232,0.18), transparent 80%);
+    }
+    .sidebar li.active i { color: var(--blue-bright); }
+    .sidebar li.active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 8px;
+      width: 3px;
+      background: var(--blue-bright);
+      border-radius: 0 2px 2px 0;
+      box-shadow: 0 0 12px rgba(74,120,232,0.6);
+    }
+ 
+    .settings-trigger {
+      margin-top: auto;
+      padding: 14px 22px 0;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    .settings-trigger i { font-size: 14px; width: 16px; transition: transform 0.4s ease; }
+    .settings-trigger:hover { color: var(--ink); }
+    .settings-trigger:hover i { transform: rotate(60deg); color: var(--accent); }
+ 
+    /* ============ MAIN ============ */
+    .main {
+      margin-left: 240px;
+      padding: 36px 44px 56px;
+      position: relative;
+      z-index: 1;
+      max-width: 1500px;
+    }
+ 
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+      gap: 24px;
+    }
+    .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 22px;
+      height: 1px;
+      background: var(--blue-bright);
+    }
+    h1 {
+      font-size: 44px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+    h1 .accent-dot { color: var(--accent); }
+    .subhead {
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+ 
+    .top-meta {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-align: right;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      min-width: 200px;
+    }
+    .top-meta .big {
+      font-size: 20px;
+      color: var(--ink);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      display: block;
+    }
+    .top-meta .small {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+ 
+    /* ============ VIEW SWITCHING ============ */
+    .view { display: none; animation: viewIn 0.4s ease forwards; }
+    .view.active { display: block; }
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: none; }
+    }
+ 
+    /* ============ BUTTONS ============ */
+    .btn {
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.005em;
+    }
+    .btn i { font-size: 11px; }
+    .btn-primary {
+      background: var(--accent-deep);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(167,139,250,0.3), 0 6px 16px rgba(139,92,246,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(167,139,250,0.5), 0 10px 22px rgba(139,92,246,0.4);
+    }
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--ink-soft);
+      border-color: var(--line);
+    }
+    .btn-ghost:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+      background: var(--surface-hi);
+    }
+    .btn-ghost.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+ 
+    /* ============ CARDS (Dashboard) ============ */
+    .cards {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card:hover {
+      border-color: rgba(74,120,232,0.45);
+      background: var(--surface-hi);
+      transform: translateY(-2px);
+    }
+    .card.featured {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+      border-color: rgba(74,120,232,0.3);
+    }
+    .card.featured::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(74,120,232,0.22), transparent 65%);
+      pointer-events: none;
+    }
+    .card-head { display: flex; justify-content: space-between; align-items: center; }
+    .card-label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card-icon {
+      width: 32px; height: 32px;
+      border-radius: 7px;
+      background: rgba(74,120,232,0.12);
+      border: 1px solid rgba(74,120,232,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--blue-bright);
+      font-size: 13px;
+    }
+    .card-value {
+      font-size: 84px;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      margin: 18px 0 4px;
+    }
+    .card.featured .card-value {
+      background: linear-gradient(180deg, #fff 0%, var(--blue-bright) 110%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-soft);
+      letter-spacing: 0.04em;
+    }
+    .delta-up   { color: var(--completed-br); font-weight: 600; }
+    .delta-down { color: var(--not-started-br); font-weight: 600; }
+ 
+    .mini-bars { display: flex; gap: 3px; align-items: flex-end; height: 28px; }
+    .mini-bar { width: 5px; background: var(--blue); opacity: 0.45; border-radius: 1px; }
+    .mini-bar.peak {
+      background: var(--blue-bright);
+      opacity: 1;
+      box-shadow: 0 0 8px var(--blue-bright);
+    }
+ 
+    .progress-track {
+      height: 4px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+      width: 60px;
+    }
+    .progress-fill { height: 100%; background: var(--blue-bright); border-radius: 2px; }
+ 
+    /* ============ SECTION HEADING ============ */
+    .section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .section h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .section .count {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 3px 9px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      letter-spacing: 0.05em;
+    }
+    .section .rule {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--line), transparent);
+    }
+ 
+    /* ============ TABLE ============ */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      padding: 14px 24px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--line);
+    }
+    tbody td {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.2s ease; cursor: pointer; }
+    tbody tr:hover { background: var(--surface-hi); }
+ 
+    .project-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .project-name .idx {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted-low);
+      font-weight: 400;
+    }
+    .due-date {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+    }
+ 
+    /* ============ STATUS PILLS ============ */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .status .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .status--in-progress {
+      background: rgba(189,132,0,0.12);
+      color: var(--in-progress-br);
+      border: 1px solid rgba(189,132,0,0.3);
+    }
+    .status--in-progress .dot { background: var(--in-progress-br); box-shadow: 0 0 8px var(--in-progress); }
+    .status--in-progress .dot::after {
+      content:''; position:absolute; inset:-3px;
+      border-radius:50%; background: var(--in-progress-br);
+      opacity: 0.3; animation: pulse 2s infinite;
+    }
+    .status--completed {
+      background: rgba(23,99,54,0.18);
+      color: var(--completed-br);
+      border: 1px solid rgba(23,99,54,0.35);
+    }
+    .status--completed .dot { background: var(--completed-br); box-shadow: 0 0 6px var(--completed); }
+    .status--not-started {
+      background: rgba(171,33,23,0.14);
+      color: var(--not-started-br);
+      border: 1px solid rgba(171,33,23,0.32);
+    }
+    .status--not-started .dot { background: var(--not-started-br); box-shadow: 0 0 6px var(--not-started); }
+    @keyframes pulse {
+      0%, 100% { opacity: 0; transform: scale(0.7); }
+      50%      { opacity: 0.35; transform: scale(1.6); }
+    }
+ 
+    /* ============ TOOLBAR (Projects/Teams) ============ */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .search-wrap {
+      flex: 1;
+      max-width: 360px;
+      position: relative;
+    }
+    .search-wrap i {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px 10px 36px;
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+ 
+    .filter-group { display: flex; gap: 6px; }
+ 
+    /* ============ PROJECT CARDS (Projects view) ============ */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px 22px;
+      position: relative;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .project-card:hover {
+      border-color: rgba(167,139,250,0.45);
+      background: var(--surface-hi);
+      transform: translateY(-2px);
+    }
+    .project-card.priority-high::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .project-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .project-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px;
+      letter-spacing: -0.01em;
+    }
+    .project-card .sub {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .priority-badge {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid rgba(167,139,250,0.3);
+    }
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .avatars { display: flex; }
+    .avatar-mini {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--surface);
+      margin-left: -6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .avatar-mini:first-child { margin-left: 0; }
+    .project-progress {
+      margin-top: 14px;
+    }
+    .project-progress .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .project-progress .row span:last-child { color: var(--ink-soft); }
+    .project-progress .track {
+      height: 4px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .project-progress .fill { height: 100%; background: var(--blue-bright); border-radius: 2px; }
+    .project-progress .fill.violet { background: var(--accent); }
+    .project-progress .fill.green { background: var(--completed-br); }
+ 
+    /* ============ TEAM CARDS ============ */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card:hover {
+      border-color: rgba(167,139,250,0.4);
+      background: var(--surface-hi);
+      transform: translateY(-2px);
+    }
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(180deg, var(--accent-glow), transparent);
+      pointer-events: none;
+    }
+    .avatar-lg {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 auto 14px;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.01em;
+    }
+    .team-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px;
+      letter-spacing: -0.01em;
+    }
+    .team-card .role {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .team-stats {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .team-stats .stat .num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .team-stats .stat .lbl {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .online-dot {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--completed-br);
+      border: 3px solid var(--surface);
+    }
+ 
+    /* ============ CALENDAR ============ */
+    .cal-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 14px;
+    }
+    .calendar {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+    }
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .cal-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .cal-title .yr { color: var(--muted); font-weight: 400; }
+    .cal-nav { display: flex; gap: 6px; }
+    .cal-nav button {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.2s;
+    }
+    .cal-nav button:hover { color: var(--accent); border-color: var(--accent); }
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .cal-weekdays div {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 8px 0;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      background: var(--surface-2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .cal-day:hover { border-color: var(--accent); background: var(--surface-hi); }
+    .cal-day.empty { background: transparent; cursor: default; }
+    .cal-day.empty:hover { border-color: transparent; }
+    .cal-day .num {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+    .cal-day.today {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+    }
+    .cal-day.today .num { color: var(--accent); font-weight: 700; }
+    .cal-day.selected {
+      background: var(--accent-deep);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .cal-day.selected .num { color: #fff; }
+    .cal-day .events {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+    .cal-day .ev-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+    }
+    .ev-dot.in-progress { background: var(--in-progress-br); }
+    .ev-dot.completed   { background: var(--completed-br); }
+    .ev-dot.not-started { background: var(--not-started-br); }
+ 
+    .deadlines {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+    }
+    .deadlines h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+    .deadlines .sub {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .deadline-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .deadline-item:last-child { border-bottom: none; }
+    .deadline-date {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+      min-width: 56px;
+    }
+    .deadline-info { flex: 1; }
+    .deadline-info .name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .deadline-info .meta {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+ 
+    /* ============ MODAL (Settings) ============ */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(6,11,34,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-bg.open { display: flex; animation: bgIn 0.25s ease; }
+    @keyframes bgIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 85vh;
+      overflow: auto;
+      animation: modalIn 0.3s ease;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to   { opacity: 1; transform: none; }
+    }
+    .modal-head {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-head h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .modal-close {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { color: var(--ink); border-color: var(--accent); }
+    .modal-body { padding: 8px 24px 22px; }
+    .setting-section {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .setting-section:last-child { border-bottom: none; }
+    .setting-section h3 {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      gap: 16px;
+    }
+    .setting-row .label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .setting-row .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .toggle {
+      position: relative;
+      width: 38px; height: 22px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      background: var(--muted);
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    .toggle.on { background: var(--accent-deep); border-color: var(--accent); }
+    .toggle.on::after { left: 18px; background: #fff; }
+ 
+    .input-text {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 12px;
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      outline: none;
+    }
+    .input-text:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+ 
+    .theme-options { display: flex; gap: 8px; }
+    .theme-opt {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-align: center;
+      transition: all 0.2s;
+      font-family: "IBM Plex Mono", monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .theme-opt.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+ 
+    .modal-foot {
+      padding: 18px 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+ 
+    /* ============ TOAST ============ */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--ink);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 0 3px var(--accent-glow);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toast i { color: var(--accent); }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+ 
+    /* ============ LOAD ANIM ============ */
+    .reveal { opacity: 0; transform: translateY(10px); animation: reveal 0.6s ease forwards; }
+    .reveal:nth-child(1) { animation-delay: 0.05s; }
+    .reveal:nth-child(2) { animation-delay: 0.13s; }
+    .reveal:nth-child(3) { animation-delay: 0.21s; }
+    .reveal:nth-child(4) { animation-delay: 0.29s; }
+    .reveal:nth-child(5) { animation-delay: 0.37s; }
+    .reveal:nth-child(6) { animation-delay: 0.45s; }
+    .reveal:nth-child(7) { animation-delay: 0.53s; }
+    .reveal:nth-child(8) { animation-delay: 0.61s; }
+    @keyframes reveal { to { opacity: 1; transform: none; } }
+ 
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1100px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+      .card.featured { grid-column: span 2; }
+      .cal-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 800px) {
+      .sidebar {
+        position: relative;
+        width: 100%; height: auto;
+        padding: 14px 18px;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .brand { border: none; padding: 0; margin: 0; }
+      .nav-label, .brand-status, .settings-trigger span { display: none; }
+      .sidebar ul { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+      .sidebar li { padding: 8px 10px; font-size: 13px; }
+      .sidebar li.active::before { display: none; }
+      .sidebar li i { display: none; }
+      .settings-trigger { margin: 0; padding: 0; border: none; }
+      .main { margin-left: 0; padding: 24px 18px 48px; }
+      .top { flex-direction: column; }
+      .top-meta { width: 100%; text-align: left; }
+      h1 { font-size: 32px; }
+      .cards { grid-template-columns: 1fr; }
+      .card.featured { grid-column: span 1; }
+      .card-value { font-size: 56px; }
+      thead th, tbody td { padding: 12px; }
+      .project-name { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-row">
+        <div class="brand-mark"></div>
+        <div class="brand-name">Project Manager</div>
+      </div>
+      <div class="brand-status"><span class="live-dot"></span>Live</div>
+    </div>
+ 
+    <div class="nav-label">Workspace</div>
+    <ul id="nav">
+      <li class="active" data-view="dashboard"><i class="fa-solid fa-grip"></i>Dashboard</li>
+      <li data-view="projects"><i class="fa-solid fa-folder"></i>Projects</li>
+      <li data-view="teams"><i class="fa-solid fa-users"></i>Teams</li>
+      <li data-view="calendar"><i class="fa-solid fa-calendar"></i>Calendar</li>
+    </ul>
+ 
+    <div class="settings-trigger" id="open-settings">
+      <i class="fa-solid fa-gear"></i>
+      <span>Settings</span>
+    </div>
+  </aside>
+ 
+  <main class="main">
+ 
+    <div class="top">
+      <div>
+        <div class="eyebrow" id="eyebrow">Workspace · W20 / Q2</div>
+        <h1 id="page-title">Dashboard<span class="accent-dot">.</span></h1>
+        <div class="subhead" id="page-sub">3 projects advancing this quarter — tasks tracking on schedule, team fully active.</div>
+      </div>
+      <div class="top-meta">
+        <span class="small">Today</span>
+        <span class="big">21.05.26</span>
+        Thursday · 09:42 EST
+      </div>
+    </div>
+ 
+    <!-- =================== DASHBOARD VIEW =================== -->
+    <div class="view active" data-view="dashboard">
+      <div class="cards">
+        <div class="card featured reveal">
+          <div class="card-head">
+            <span class="card-label">Active Projects</span>
+            <div class="card-icon"><i class="fa-solid fa-grip"></i></div>
+          </div>
+          <div>
+            <div class="card-value">8</div>
+            <div class="card-foot">
+              <span><span class="delta-up">↑ 2</span> from last week</span>
+              <div class="mini-bars">
+                <div class="mini-bar" style="height:28%"></div>
+                <div class="mini-bar" style="height:48%"></div>
+                <div class="mini-bar" style="height:38%"></div>
+                <div class="mini-bar" style="height:62%"></div>
+                <div class="mini-bar" style="height:52%"></div>
+                <div class="mini-bar" style="height:78%"></div>
+                <div class="mini-bar peak" style="height:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="card reveal">
+          <div class="card-head">
+            <span class="card-label">Tasks Today</span>
+            <div class="card-icon"><i class="fa-solid fa-check"></i></div>
+          </div>
+          <div>
+            <div class="card-value">15</div>
+            <div class="card-foot">
+              <span>6 done - 9 open</span>
+              <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="card reveal">
+          <div class="card-head">
+            <span class="card-label">Team Members</span>
+            <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+          </div>
+          <div>
+            <div class="card-value">5</div>
+            <div class="card-foot">
+              <span>All active</span>
+              <span style="color:var(--completed-br); letter-spacing:1px">● ● ● ● ●</span>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="section">
+        <h2>Project Overview</h2>
+        <span class="count">03 items</span>
+        <span class="rule"></span>
+        <button class="btn btn-ghost" onclick="switchView('projects')">View all<i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+ 
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:55%">Project</th>
+              <th>Status</th>
+              <th>Due Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="switchView('projects')">
+              <td><div class="project-name"><span class="idx">01</span>Website Redesign</div></td>
+              <td><span class="status status--in-progress"><span class="dot"></span>In Progress</span></td>
+              <td class="due-date">2026.01.10</td>
+            </tr>
+            <tr onclick="switchView('projects')">
+              <td><div class="project-name"><span class="idx">02</span>Marketing Campaign</div></td>
+              <td><span class="status status--completed"><span class="dot"></span>Completed</span></td>
+              <td class="due-date">2025.12.20</td>
+            </tr>
+            <tr onclick="switchView('projects')">
+              <td><div class="project-name"><span class="idx">03</span>App Prototype</div></td>
+              <td><span class="status status--not-started"><span class="dot"></span>Not Started</span></td>
+              <td class="due-date">2026.02.05</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+ 
+    <!-- =================== PROJECTS VIEW =================== -->
+    <div class="view" data-view="projects">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" class="search-input" id="project-search" placeholder="Search projects…">
+        </div>
+        <div class="filter-group">
+          <button class="btn btn-ghost active" data-filter="all">All</button>
+          <button class="btn btn-ghost" data-filter="in-progress">In Progress</button>
+          <button class="btn btn-ghost" data-filter="completed">Completed</button>
+          <button class="btn btn-ghost" data-filter="not-started">Not Started</button>
+        </div>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="toast('Project created')">
+          <i class="fa-solid fa-plus"></i>New Project
+        </button>
+      </div>
+ 
+      <div class="project-grid" id="project-grid">
+      </div>
+    </div>
+ 
+    <!-- =================== TEAMS VIEW =================== -->
+    <div class="view" data-view="teams">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" class="search-input" id="team-search" placeholder="Search team members…">
+        </div>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="toast('Invitation sent')">
+          <i class="fa-solid fa-user-plus"></i>Invite Member
+        </button>
+      </div>
+ 
+      <div class="team-grid" id="team-grid">
+      </div>
+    </div>
+ 
+    <!-- =================== CALENDAR VIEW =================== -->
+    <div class="view" data-view="calendar">
+      <div class="cal-layout">
+        <div class="calendar">
+          <div class="cal-header">
+            <div class="cal-title" id="cal-title">May <span class="yr">2026</span></div>
+            <div class="cal-nav">
+              <button id="cal-prev"><i class="fa-solid fa-chevron-left"></i></button>
+              <button id="cal-today">Today</button>
+              <button id="cal-next"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="cal-weekdays">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="deadlines">
+          <h3>Upcoming</h3>
+          <div class="sub">Next 60 days</div>
+          <div id="deadline-list"></div>
+        </div>
+      </div>
+    </div>
+ 
+  </main>
+ 
+  <!-- =================== SETTINGS MODAL =================== -->
+  <div class="modal-bg" id="settings-modal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <h2>Settings</h2>
+        <button class="modal-close" onclick="closeSettings()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+ 
+        <div class="setting-section">
+          <h3>Account</h3>
+          <div class="setting-row">
+            <div>
+              <div class="label">Workspace name</div>
+              <div class="hint">Visible to all members</div>
+            </div>
+          </div>
+          <input class="input-text" type="text" value="Project Manager">
+        </div>
+ 
+        <div class="setting-section">
+          <h3>Preferences</h3>
+          <div class="setting-row">
+            <div>
+              <div class="label">Email notifications</div>
+              <div class="hint">Get notified about deadline changes</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="label">Weekly summary</div>
+              <div class="hint">Receive a digest every Monday</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="label">Sound effects</div>
+              <div class="hint">Play sounds on completion</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+ 
+        <div class="setting-section">
+          <h3>Appearance</h3>
+          <div class="setting-row" style="padding-bottom:8px">
+            <div>
+              <div class="label">Theme</div>
+              <div class="hint">Choose your visual mode</div>
+            </div>
+          </div>
+          <div class="theme-options">
+            <div class="theme-opt" onclick="setTheme(this)">Light</div>
+            <div class="theme-opt active" onclick="setTheme(this)">Dark</div>
+            <div class="theme-opt" onclick="setTheme(this)">Auto</div>
+          </div>
+        </div>
+ 
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeSettings()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSettings()">Save changes</button>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toast-msg">Saved</span></div>
+ 
+  <script>
+    // ============ DATA ============
+    const projects = [
+      { id: '01', name: 'Website Redesign',       status: 'in-progress', due: '2026.01.10', progress: 65, priority: 'high', team: ['AC','SK','MR'] },
+      { id: '02', name: 'Marketing Campaign',     status: 'completed',   due: '2025.12.20', progress: 100, priority: 'normal', team: ['JT','SK'] },
+      { id: '03', name: 'App Prototype',          status: 'not-started', due: '2026.02.05', progress: 0,  priority: 'high', team: ['AC','PP','MR'] },
+      { id: '04', name: 'Brand Guidelines v2',    status: 'in-progress', due: '2026.05.28', progress: 42, priority: 'normal', team: ['AC','JT'] },
+      { id: '05', name: 'Q1 Analytics Report',    status: 'not-started', due: '2026.05.15', progress: 0,  priority: 'normal', team: ['SK'] },
+      { id: '06', name: 'Mobile App Launch',      status: 'in-progress', due: '2026.06.12', progress: 78, priority: 'high', team: ['MR','PP','AC','SK'] },
+      { id: '07', name: 'Customer Survey',        status: 'completed',   due: '2026.04.30', progress: 100, priority: 'normal', team: ['JT','SK'] },
+      { id: '08', name: 'SEO Audit',              status: 'in-progress', due: '2026.05.22', progress: 55, priority: 'normal', team: ['JT','MR'] }
+    ];
+ 
+    const team = [
+      { initials: 'AC', name: 'Alex Chen',     role: 'Lead Designer',   color: '#4A78E8', active: 3, completed: 12, online: true },
+      { initials: 'SK', name: 'Sarah Kim',     role: 'Project Manager', color: '#A78BFA', active: 5, completed: 18, online: true },
+      { initials: 'MR', name: 'Marcus Rivera', role: 'Frontend Dev',    color: '#E8B33A', active: 4, completed: 9,  online: true },
+      { initials: 'PP', name: 'Priya Patel',   role: 'Backend Dev',     color: '#3A9B5A', active: 2, completed: 14, online: true },
+      { initials: 'JT', name: 'Jordan Taylor', role: 'Marketing Lead',  color: '#D43325', active: 3, completed: 11, online: true }
+    ];
+ 
+    const memberByInitials = Object.fromEntries(team.map(m => [m.initials, m]));
+ 
+    // ============ VIEW SWITCHING ============
+    const titles = {
+      dashboard: { eyebrow: 'Workspace · W20 / Q2', title: 'Dashboard<span class="accent-dot">.</span>', sub: '3 projects advancing this quarter — tasks tracking on schedule, team fully active.' },
+      projects:  { eyebrow: 'Workspace · 08 Projects', title: 'Projects<span class="accent-dot">.</span>', sub: 'Everything in motion across the team. Filter by status or search by name.' },
+      teams:     { eyebrow: 'Workspace · 05 Members', title: 'Teams<span class="accent-dot">.</span>', sub: 'Your collaborators and their current workload across active projects.' },
+      calendar:  { eyebrow: 'Workspace · Timeline', title: 'Calendar<span class="accent-dot">.</span>', sub: 'Upcoming deadlines and milestones across all active projects.' }
+    };
+ 
+    function switchView(view) {
+      document.querySelectorAll('#nav li').forEach(li => {
+        li.classList.toggle('active', li.dataset.view === view);
+      });
+      document.querySelectorAll('.view').forEach(v => {
+        v.classList.toggle('active', v.dataset.view === view);
+      });
+      const t = titles[view];
+      document.getElementById('eyebrow').textContent = t.eyebrow;
+      document.getElementById('page-title').innerHTML = t.title;
+      document.getElementById('page-sub').textContent = t.sub;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+ 
+    document.querySelectorAll('#nav li').forEach(li => {
+      li.addEventListener('click', () => switchView(li.dataset.view));
+    });
+ 
+    // ============ PROJECTS RENDER ============
+    function statusLabel(s) {
+      return { 'in-progress': 'In Progress', 'completed': 'Completed', 'not-started': 'Not Started' }[s];
+    }
+    function renderProjects(filter = 'all', search = '') {
+      const grid = document.getElementById('project-grid');
+      const filtered = projects.filter(p =>
+        (filter === 'all' || p.status === filter) &&
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase">No projects match</div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map((p, i) => {
+        const fillClass = p.status === 'completed' ? 'green' : (p.priority === 'high' ? 'violet' : '');
+        const avatars = p.team.map(t => {
+          const m = memberByInitials[t];
+          return `<div class="avatar-mini" style="background:${m.color}" title="${m.name}">${t}</div>`;
+        }).join('');
+        return `
+          <div class="project-card ${p.priority === 'high' ? 'priority-high' : ''} reveal" style="animation-delay:${0.05 + i*0.05}s">
+            <div class="project-card-head">
+              <div>
+                <h3>${p.name}</h3>
+                <div class="sub">PRJ-${p.id} · Due ${p.due}</div>
+              </div>
+              ${p.priority === 'high' ? '<div class="priority-badge">Priority</div>' : ''}
+            </div>
+            <span class="status status--${p.status}"><span class="dot"></span>${statusLabel(p.status)}</span>
+            <div class="project-progress">
+              <div class="row"><span>Progress</span><span>${p.progress}%</span></div>
+              <div class="track"><div class="fill ${fillClass}" style="width:${p.progress}%"></div></div>
+            </div>
+            <div class="project-meta">
+              <div class="avatars">${avatars}</div>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em">${p.team.length} MEMBERS</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+ 
+    let activeFilter = 'all';
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderProjects(activeFilter, document.getElementById('project-search').value);
+      });
+    });
+    document.getElementById('project-search').addEventListener('input', e => {
+      renderProjects(activeFilter, e.target.value);
+    });
+    renderProjects();
+ 
+    // ============ TEAMS RENDER ============
+    function renderTeam(search = '') {
+      const grid = document.getElementById('team-grid');
+      const filtered = team.filter(m =>
+        m.name.toLowerCase().includes(search.toLowerCase()) ||
+        m.role.toLowerCase().includes(search.toLowerCase())
+      );
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase">No members match</div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map((m, i) => `
+        <div class="team-card reveal" style="animation-delay:${0.05 + i*0.05}s">
+          <div class="avatar-lg" style="background:${m.color}">
+            ${m.initials}
+            ${m.online ? '<span class="online-dot"></span>' : ''}
+          </div>
+          <h3>${m.name}</h3>
+          <div class="role">${m.role}</div>
+          <div class="team-stats">
+            <div class="stat"><div class="num">${m.active}</div><div class="lbl">Active</div></div>
+            <div class="stat"><div class="num">${m.completed}</div><div class="lbl">Done</div></div>
+          </div>
+        </div>
+      `).join('');
+    }
+    document.getElementById('team-search').addEventListener('input', e => renderTeam(e.target.value));
+    renderTeam();
+ 
+    // ============ CALENDAR ============
+    let calMonth = 4;
+    let calYear = 2026;
+    const TODAY = { d: 21, m: 4, y: 2026 };
+ 
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+ 
+    const eventMap = {};
+    projects.forEach(p => { eventMap[p.due] = p; });
+ 
+    function renderCalendar() {
+      document.getElementById('cal-title').innerHTML = `${monthNames[calMonth]} <span class="yr">${calYear}</span>`;
+      const grid = document.getElementById('cal-grid');
+      const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = `${calYear}.${String(calMonth+1).padStart(2,'0')}.${String(d).padStart(2,'0')}`;
+        const ev = eventMap[key];
+        const isToday = (d === TODAY.d && calMonth === TODAY.m && calYear === TODAY.y);
+        html += `
+          <div class="cal-day ${isToday ? 'today' : ''}" data-date="${key}">
+            <div class="num">${d}</div>
+            <div class="events">${ev ? `<div class="ev-dot ${ev.status}" title="${ev.name}"></div>` : ''}</div>
+          </div>
+        `;
+      }
+      grid.innerHTML = html;
+ 
+      grid.querySelectorAll('.cal-day:not(.empty)').forEach(el => {
+        el.addEventListener('click', () => {
+          grid.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+          el.classList.add('selected');
+          const ev = eventMap[el.dataset.date];
+          if (ev) toast(`${ev.name} · ${statusLabel(ev.status)}`);
+        });
+      });
+    }
+ 
+    function renderDeadlines() {
+      const list = document.getElementById('deadline-list');
+      const today = new Date(2026, 4, 21);
+      const upcoming = projects
+        .filter(p => p.status !== 'completed')
+        .map(p => {
+          const [y, m, d] = p.due.split('.').map(Number);
+          return { ...p, date: new Date(y, m-1, d) };
+        })
+        .filter(p => (p.date - today) / 86400000 < 60 && p.date >= today)
+        .sort((a, b) => a.date - b.date);
+ 
+      if (upcoming.length === 0) {
+        list.innerHTML = `<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px">No deadlines in this window</div>`;
+        return;
+      }
+      list.innerHTML = upcoming.map(p => {
+        const diff = Math.ceil((p.date - today) / 86400000);
+        const dateLabel = `${monthNames[p.date.getMonth()].slice(0,3).toUpperCase()} ${p.date.getDate()}`;
+        return `
+          <div class="deadline-item">
+            <div class="deadline-date">${dateLabel}</div>
+            <div class="deadline-info">
+              <div class="name">${p.name}</div>
+              <div class="meta">${diff === 0 ? 'TODAY' : 'IN ' + diff + ' DAYS'} · ${statusLabel(p.status).toUpperCase()}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+ 
+    document.getElementById('cal-prev').addEventListener('click', () => {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    });
+    document.getElementById('cal-next').addEventListener('click', () => {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    });
+    document.getElementById('cal-today').addEventListener('click', () => {
+      calMonth = TODAY.m; calYear = TODAY.y;
+      renderCalendar();
+    });
+    renderCalendar();
+    renderDeadlines();
+ 
+    // ============ SETTINGS MODAL ============
+    const modal = document.getElementById('settings-modal');
+    document.getElementById('open-settings').addEventListener('click', () => modal.classList.add('open'));
+    modal.addEventListener('click', () => modal.classList.remove('open'));
+    function closeSettings() { modal.classList.remove('open'); }
+    function saveSettings() { closeSettings(); toast('Settings saved'); }
+    function setTheme(el) {
+      el.parentElement.querySelectorAll('.theme-opt').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+ 
+    // ============ TOAST ============
+    let toastTimer;
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+    }
+ 
+    // ESC to close modal
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeSettings();
+    });
+  </script>
+ 
+</body>
 </html>
 
 
